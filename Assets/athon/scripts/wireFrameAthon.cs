@@ -12,7 +12,7 @@ public class wireFrameAthon : MonoBehaviour {
 	Mesh MMesh;
 	
 	Renderer rend;
-	
+
 	public float lineWidth = 1;
 	public float speed;
 	public float[] colors;
@@ -89,7 +89,7 @@ public class wireFrameAthon : MonoBehaviour {
 		GameObject n = meshObjects [meshObjects.Count - 1];
 		MRend = n.GetComponent<MeshRenderer> ();
 		MFilter = n.GetComponent<MeshFilter> ();
-		Renderer Rend = n.GetComponent<Renderer>();
+//		Renderer Rend = n.GetComponent<Renderer>();
 		MFilter.mesh = new Mesh();
 		mesh = MFilter.mesh;
 		MRend.sharedMaterial = lineMat;
@@ -125,8 +125,6 @@ public class wireFrameAthon : MonoBehaviour {
 //		mesh = wireFrame.GetComponent<MeshFilter> ().mesh;
 		
 		texture = new Texture2D (100, 1, TextureFormat.RGBAFloat,false);
-
-        Debug.Log(texture);
 		texture.filterMode = FilterMode.Point;
 		posTexture = new Texture2D (100, 1, TextureFormat.RGBAFloat,false);
 		posTexture.filterMode = FilterMode.Point;
@@ -239,7 +237,7 @@ public class wireFrameAthon : MonoBehaviour {
 
 			}
 
-			Vector3 p = Vector3.zero;//randVec (1);//Vector3.zero;//verts [b [0]];
+//			Vector3 p = Vector3.zero;//randVec (1);//Vector3.zero;//verts [b [0]];
 //			Vector3 s = randVec (1);//;//Vector3.zero;//verts [b [1]];
 			
 			//make verts to instantiate dots
@@ -263,10 +261,10 @@ public class wireFrameAthon : MonoBehaviour {
 			float offset = (float)++dCount*off;
 			
 			
-			Vector3 start = new Vector3(offset+off*.3f, -1,0);
-			Vector3 start2 = new Vector3(offset+off*.3f,1,0);
-			Vector3 end = new Vector3(offset+off*.7f, -1,0);
-			Vector3 end2 = new Vector3(offset+off*.7f,1,0);
+//			Vector3 start = new Vector3(offset+off*.3f, -1,0);
+//			Vector3 start2 = new Vector3(offset+off*.3f,1,0);
+//			Vector3 end = new Vector3(offset+off*.7f, -1,0);
+//			Vector3 end2 = new Vector3(offset+off*.7f,1,0);
 
 			Vector2 goodUV = new Vector2((float)h/numPoints,(float)v/numPoints);
 			Vector3 goodPos = new Vector3(goodUV.x,goodUV.y,0);
@@ -383,9 +381,9 @@ public class wireFrameAthon : MonoBehaviour {
 		texture.filterMode = FilterMode.Point;
 		posTexture.Resize ((int)detail, (int)detail);
 		posTexture.filterMode = FilterMode.Point;
-		int on = 0;
-		int off = 0;
-		int q = -1;
+//		int on = 0;
+//		int off = 0;
+//		int q = -1;
 		Vector3 vp;
 		
 		//		print (detail * 4);
@@ -423,20 +421,28 @@ public class wireFrameAthon : MonoBehaviour {
 		int z = Mathf.FloorToInt (pos.z / .1f);
 		return x * h1 + y * h2 + z * h3;
 	}
-	
+
+	void updateBounds(){
+		Transform camTransform = Camera.main.transform;
+		float distToCenter = (Camera.main.farClipPlane - Camera.main.nearClipPlane) / 2.0f;
+		Vector3 center = camTransform.position + camTransform.forward * distToCenter;
+		float extremeBound = 5000.0f;
+		MeshFilter filter = GetComponent<MeshFilter> ();
+		filter.sharedMesh.bounds = new Bounds (center, Vector3.one * extremeBound);
+	}
 	// Update is called once per frame
 	void Update () {
 		
 		
-		MRend.sharedMaterial.SetFloat ("_Tile", textureTile);
-		MRend.sharedMaterial.SetFloat ("_Speed", speed);
-		MRend.sharedMaterial.SetFloat ("_Saturation", saturation);
-		MRend.sharedMaterial.SetFloat ("_Brightness", brightness);
-		MRend.sharedMaterial.SetFloat ("_ShadowSpeed", shadowSpeed);
-		MRend.sharedMaterial.SetFloat ("_ShadowTile", shadowTile);
-		MRend.sharedMaterial.SetFloat ("_UNPnts", edges.Count*4);
-		MRend.sharedMaterial.SetFloat ("_LineWidth", lineWidth);
-		MRend.sharedMaterial.SetFloat ("_HueShift", hueShift);
+//		MRend.sharedMaterial.SetFloat ("_Tile", textureTile);
+//		MRend.sharedMaterial.SetFloat ("_Speed", speed);
+//		MRend.sharedMaterial.SetFloat ("_Saturation", saturation);
+//		MRend.sharedMaterial.SetFloat ("_Brightness", brightness);
+//		MRend.sharedMaterial.SetFloat ("_ShadowSpeed", shadowSpeed);
+//		MRend.sharedMaterial.SetFloat ("_ShadowTile", shadowTile);
+//		MRend.sharedMaterial.SetFloat ("_UNPnts", edges.Count*4);
+//		MRend.sharedMaterial.SetFloat ("_LineWidth", lineWidth);
+//		MRend.sharedMaterial.SetFloat ("_HueShift", hueShift);
 		
 //		Transform camTransform = Camera.main.transform;
 //		float distToCenter = (Camera.main.farClipPlane - Camera.main.nearClipPlane) / 2.0f;

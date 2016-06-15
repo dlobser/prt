@@ -64,8 +64,10 @@
 //				UNITY_APPLY_FOG(i.fogCoord, col);	
 				float force = .0001;
 //				fixed4 vel = (normalize(col-_Pos) * force)/(distance(col,_Pos));
-				float dist = min(1.0,max(0.,(1-d)+1.));	
+				float dist = min(1.0,max(0.,(1-d)+3.));	
 //				return col+_Amount*tex2D(_Other,i.uv)*cos(dist*3.14);	
+				//if(d>1.1)
+//				col+=(tex2D(_Other,i.uv))*_Amount;//*(1.0-max(0.0,d));//tex2D(_Other,i.uv)/d*d*d*d;
 				return lerp(angle,col+_Amount*tex2D(_Other,i.uv),dist);
 			}
 			ENDCG

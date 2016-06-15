@@ -1,4 +1,4 @@
-﻿Shader "Unlit/simpleSin"
+﻿ Shader "Unlit/simpleSin"
 {
 	Properties
 	{
@@ -106,8 +106,21 @@
 				UNITY_APPLY_FOG(i.fogCoord, col);
 				
 				
-				float d = max(distance(col2.xyz,_Pos.xyz),1.0);
+				float d = max(distance(col2.xyz,_Pos.xyz)*10.,1.0);
 				float t = _Time.y*_Speed;//*(1.+d*.1);
+				fixed4 delt = normalize(_Pos-col2);
+				float4 gravity = (vel*.95)+((delt)/(d*d*d));
+//				float scale = 10.0;
+//				float maxd = 1.0;
+//				float d = max(distance(col2.xyz,_Pos.xyz),maxd);
+//
+//				float d01 = d/maxd;
+//				float f01 = 1.0-d01;
+//				float finalForce = f01*scale;
+//
+//				float t = _Time.y*_Speed;//*(1.+d*.1);
+//				fixed4 delt = normalize(_Pos-col2);
+//				float4 gravity = vel*.995+finalForce*delt;//+((delt)/d);
 //				float sn = snoise(col+_Time.y*_Speed);		
 	
 //				return float4(
@@ -116,8 +129,7 @@
 //				sin(1.1*snoise(float2(col.y,col.z+_Time.x*_Speeds.z)+t)),1.0)*.005;
 //				
 //				return float4(curl(col.xyz*.3,_Time.x*_Speed),1.0);
-				fixed4 delt = normalize(_Pos-col2);
-				float4 gravity = (vel*.99) + ((delt) / (d*d));// vel + delt*5. / d;;
+			
 //				return // qgravity;
 				float4 noisy =  ((lerp(float4(
 //				sin(col.x*_Freq*_Speeds.x),
@@ -126,6 +138,9 @@
 				sin(col.x*_Freq*_Speeds.x),
 				sin(_Time.z*_Speed*10.+col.y*_Freq*_Speeds.y),
 				sin(col.z*_Freq*_Speeds.z),0.0),
+//				sin(d*_Freq*_Speeds.x),
+//				cos(_Time.z*_Speed*10.+d*_Freq*_Speeds.y),
+//				sin(d*_Freq*_Speeds.z),0.0),
 				lerp(float4(
 				sin(.8*snoise(float2(col.x,col.y+_Time.x)+t)),
 				sin(snoise(float2(col.z,col.x+_Time.x)+t)),

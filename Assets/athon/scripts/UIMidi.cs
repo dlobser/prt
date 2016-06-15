@@ -54,10 +54,26 @@ public class UIMidi : MonoBehaviour {
 		}
 
 		values = new float[1000];
+
+		setMinKnobs ();
 	}
 	
 //	// Update is called once per frame
 	void Update () {
+
+		int q = -1;
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 9; j++) {
+//				print (q);
+				d.dials [i, j] = values [++q]*mult;
+				d.knobs [i, j] = values [q+18]*mult;
+
+			}
+		}
+//		print (d.recordDials ());
+	}
+
+	public void setMinKnobs(){
 		if (!setMin) {
 			for (int i = 0; i < 9*2*2; i++) {
 				sliders[i].minValue = i;//(float)i + 1f;
@@ -71,16 +87,21 @@ public class UIMidi : MonoBehaviour {
 
 			}
 		}
+	}
+
+	public void setSliders(){
 		int q = -1;
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 9; j++) {
-//				print (q);
-				d.dials [i, j] = values [++q]*mult;
-				d.knobs [i, j] = values [q+18]*mult;
-
+				values [++q] =  d.dials [i, j]/mult; 
+				values [q+18] = d.knobs [i, j]/mult;
+				print (values [q]);
 			}
 		}
-//		print (d.recordDials ());
+		q = -1;
+		for (int i = 0; i < 9*2*2; i++) {
+			sliders [i].value = ++q+values [i];
+		}
 	}
 
 	public void setWhichKnob(float j){
@@ -91,6 +112,7 @@ public class UIMidi : MonoBehaviour {
 		values [whichKnob] = (j-Mathf.Floor (j));
 	}
 	public void setButton(float j){
+//		buttons[j].
 		print (j);
 	}
 
