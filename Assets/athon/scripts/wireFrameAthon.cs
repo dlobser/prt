@@ -441,7 +441,7 @@ public class wireFrameAthon : MonoBehaviour {
 //		MRend.sharedMaterial.SetFloat ("_ShadowSpeed", shadowSpeed);
 //		MRend.sharedMaterial.SetFloat ("_ShadowTile", shadowTile);
 //		MRend.sharedMaterial.SetFloat ("_UNPnts", edges.Count*4);
-//		MRend.sharedMaterial.SetFloat ("_LineWidth", lineWidth);
+		MRend.sharedMaterial.SetFloat ("_LineWidth", lineWidth);
 //		MRend.sharedMaterial.SetFloat ("_HueShift", hueShift);
 		
 //		Transform camTransform = Camera.main.transform;

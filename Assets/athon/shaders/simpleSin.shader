@@ -109,7 +109,7 @@
 				float d = max(distance(col2.xyz,_Pos.xyz)*10.,1.0);
 				float t = _Time.y*_Speed;//*(1.+d*.1);
 				fixed4 delt = normalize(_Pos-col2);
-				float4 gravity = (vel*.95)+((delt)/(d*d*d));
+				float4 gravity = (vel*.98)+((delt)/(d*d*d));
 //				float scale = 10.0;
 //				float maxd = 1.0;
 //				float d = max(distance(col2.xyz,_Pos.xyz),maxd);
