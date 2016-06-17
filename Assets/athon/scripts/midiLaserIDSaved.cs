@@ -4,7 +4,7 @@ using System.IO;
 using System.Collections.Generic;
 
 
-public class midiLaserID : MonoBehaviour {
+public class midiLaserIDSaved : MonoBehaviour {
 
 	public AudioManagerMic audiM;
 
@@ -49,8 +49,6 @@ public class midiLaserID : MonoBehaviour {
 	KeyCode[] keyCodes;
 
     public GameObject controller;
-    public GameObject controller2;
-
     public ViveWandControl ViveWand;
 
 
@@ -100,24 +98,17 @@ public class midiLaserID : MonoBehaviour {
 
 	void switch3DObject(float which){
 		whichThing = (int)which;
-		if (whichThing > things.Length)
-			whichThing = 0;
 		print (whichThing);
 		for(int j = 0 ; j < things.Length ; j++){
 			things[j].SetActive(false);
 		}
 		things[whichThing].SetActive(true);
-		C = things [whichThing];
 	}
 
 	void objSwitcher(){
 		for (int i = 0; i < things.Length; i++) {
 			if(d.buttons[0,i]>.5f)
 				switch3DObject (i);
-		
-		}
-		if (Input.GetKeyUp(KeyCode.W) ) {
-			switch3DObject (++whichThing);
 		}
 	}
 
@@ -143,6 +134,7 @@ public class midiLaserID : MonoBehaviour {
 		if (Input.GetKeyUp( KeyCode.P) || MidiInput.GetKnob (48, MidiInput.Filter.Realtime) > .5f) {
 			for (int i = 0; i < 8; i++) {
 				System.IO.File.WriteAllText ("Assets/athon/data/data_" + sessionName + i + ".txt", presets[i]);
+                Debug.Log(presets[i]);
 			}
 			Debug.Log ("saved");
 		}
@@ -160,7 +152,9 @@ public class midiLaserID : MonoBehaviour {
 				}
 			}
 //		}
-
+		if (Input.GetKeyUp (keyCodes[0])) {
+			print ("poop");
+		}
 		if (Input.GetKeyUp (KeyCode.R)) {
 			recording = !recording;
 			audiM.Play ();
@@ -231,9 +225,14 @@ public class midiLaserID : MonoBehaviour {
 
 		objSwitcher ();
 		things [whichThing].transform.Rotate (d.knobs[1,4] * -.1f * t * 60, d.knobs[1,5] * -.1f * t * 60, d.knobs[1,6] * -.1f * t * 60);
+       // noise.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", new Color(1, 1, 1, d.dials[0, 0] * .1f * (1f + gn(1, d.knobs[0, 0], 10))));
 
-		noise.GetComponent<Renderer> ().sharedMaterial.SetColor ("_Color", new Color (1, 1, 1, d.dials[0,0]*.1f*(1f+gn (1,d.knobs[0,0],10)) ));
-		A.GetComponent<Renderer>().sharedMaterial.SetFloat ("_Amount",  d.dials[0,1]*gn (2,d.knobs[0,1],10)*.01f*(1+d.dials [0,2]*2f)*gn (3,d.knobs[0,2],10) );
+        if (ViveWand.pad)
+		    noise.GetComponent<Renderer> ().sharedMaterial.SetColor ("_Color", new Color (1, 1, 1, .1f ));
+        else
+            noise.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", new Color(1, 1, 1, 0));
+
+        A.GetComponent<Renderer>().sharedMaterial.SetFloat ("_Amount",  d.dials[0,1]*gn (2,d.knobs[0,1],10)*.01f*(1+d.dials [0,2]*2f)*gn (3,d.knobs[0,2],10) );
 		C.GetComponent<Renderer>().sharedMaterial.SetFloat ("_Speed", d.dials[0,3]*.1f*gn (4,d.knobs[0,3],10) );
 		C.GetComponent<Renderer>().sharedMaterial.SetFloat ("_Freq", d.dials[0,4]*.01f*gn (5,d.knobs[0,4],10)*(1+d.dials[0,5])*3f*gn (6,d.knobs[0,5],10) );
 		C.GetComponent<Renderer>().sharedMaterial.SetFloat ("_Which", d.dials[0,6]*.1f );
@@ -262,26 +261,18 @@ public class midiLaserID : MonoBehaviour {
                 //Mathf.Cos(Mathf.Pow(d.dials[1,1],2)*Time.time*3f)*d.dials[1,3]*.2f,
                 //Mathf.Sin(Mathf.Pow(d.dials[1,2],2)*Time.time*3f)*d.dials[1,3]*.2f,
                 0 ));
-        C.GetComponent<Renderer>().sharedMaterial.SetVector("_Pos2",
-            new Vector4(
-                controller2.transform.position.x,
-                controller2.transform.position.y,
-                controller2.transform.position.z,
-                0));
-        C.GetComponent<Renderer>().sharedMaterial.SetVector ("_Speeds", 
+		C.GetComponent<Renderer>().sharedMaterial.SetVector ("_Speeds", 
 			new Vector4(
 				d.dials[1,5],
 				d.dials[1,6],
 				d.dials[1,7],0 ));
 		initial.GetComponent<Renderer>().sharedMaterial.SetColor ("_Color",new Color(1,1,1, d.dials [0,7]*.1f*gn (8,d.knobs[0,7],10)  ));
 		C.GetComponent<Renderer>().sharedMaterial.SetFloat ("_SinAdd", d.dials[0,8]*.1f*gn (9,d.knobs[0,8],10) );
-      
-		// C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Gravity", d.dials[1, 4] * .1f);
+       // C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Gravity", d.dials[1, 4] * .1f);
         if (ViveWand.click)
 		    C.GetComponent<Renderer>().sharedMaterial.SetFloat ("_Gravity", 1 );
         else
             C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Gravity", 0);
-		
         Debug.Log(ViveWand.click);
         wire.GetComponent<wireFrameAthon>().lineWidth = d.knobs[1,0] * .005f;
 		wire.GetComponent<Renderer>().sharedMaterial.SetColor("_Color",new Color(1,1,1, d.knobs[1,1] * .02f));
