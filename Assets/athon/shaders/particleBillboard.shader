@@ -76,7 +76,7 @@
 //		            float t = max(0., min(.999, f)) * (_UNPnts-1);
 //		            int n = t;//int(t);
 					float4 off = tex2Dlod(_Offset,float4(f,b,0,0));
-		            return  off;//tex2Dlod (_PosTex, float4(f,b,0,0))+off;
+		            return  off;//float4(pow(off.x,.4554),pow(off.y,.4554),pow(off.z,.4554),off.w);//tex2Dlod (_PosTex, float4(f,b,0,0))+off;
 //		            float4 uData2 = tex2Dlod (_PosTex, float4(f+.0001,0,0,0));
 //		            float4 uData1 = tex2D(_PosTex, float2(f,0.));
 //		            float4 uData2 = tex2D(_PosTex, float2(f+.0001,0.));
@@ -98,7 +98,7 @@
 					float4 position = o.vertex;
 	            	float4 p0 = mul(UNITY_MATRIX_MVP, place(position.x,position.y ));
 //	            	float4 p1 = mul(UNITY_MATRIX_MVP, place(position.x + (1/_UNPnts)));
-	            	o.vertex = p0+ float4(uv2.x,uv2.y*1.5,0,0)*_LineWidth;//p1 + normalize(float4(p1.y-p0.y, p0.x-p1.x, 0., 0.)) * position.y * _LineWidth;// tex2Dlod (_PosTex, float4(uv.x,uv.y,0,0)).a * _LineWidth;
+	            	o.vertex = p0+ float4(uv2.x,uv2.y*1.0,0,0)*_LineWidth;//p1 + normalize(float4(p1.y-p0.y, p0.x-p1.x, 0., 0.)) * position.y * _LineWidth;// tex2Dlod (_PosTex, float4(uv.x,uv.y,0,0)).a * _LineWidth;
 
 					return o;
 				}
