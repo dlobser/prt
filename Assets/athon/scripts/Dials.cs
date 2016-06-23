@@ -94,7 +94,7 @@ public class Dials : Singleton<Dials> {
 //		for (int i = 0; i < first.Length; i++) {
 //			print (first [i]);
 //		}
-		Debug.Log (first[1]);
+		//Debug.Log (first[1]);
 		Debug.Log (s);
 		int q = 0;
 		for (int i = 0; i < first.Length/3; i++) {

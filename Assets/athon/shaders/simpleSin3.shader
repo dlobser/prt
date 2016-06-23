@@ -112,10 +112,10 @@
 				
 				d = max(distance(col2.xyz,_Pos.xyz)*10.,1.0);
 				delt = normalize(_Pos-col2);
-				float4 cur = pow(10.*(float4(curl(col.xyz/d,_Time.y*_Speed),1.0)/(d*d*d)),1.0);
+				float4 cur = pow(1.*(float4(curl(10.*col.xyz/d,_Time.y*_Speed),1.0)/(d*d*d)),1.0);
 				float4 superNoise = lerp(float4(0.0,0.0,0.0,0.0),float4(sin(i.uv.x*14385+col.x*314358.3),sin(col.y*13434.5),sin(i.uv.y*438972+col.z*294298.3),0.0),max(0.0,1.-d*.5));
 
-				return ( (vel*.98+ gravity + lerp(float4(0.0,0.0,0.0,0.0),cur,max(0.0,1.-d*.01))+ max(0.0,(((delt)/(d*d)))-.02) + superNoise));
+				return ( (vel*.98+ gravity + lerp(float4(0.0,0.0,0.0,0.0),cur,max(0.0,1.-d*.01))+ max(0.0,((delt*.1)/(d*d))-.01) + superNoise*.1) );
 			}
 			ENDCG
 		}

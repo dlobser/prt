@@ -140,7 +140,7 @@ public class midiLaserID : MonoBehaviour {
 				d.readDials ( s);//(System.IO.File.ReadAllText ("Assets/athon/data/data_" + i + ".txt"));
 			}
 		}
-		if (Input.GetKeyUp( KeyCode.P) || MidiInput.GetKnob (48, MidiInput.Filter.Realtime) > .5f) {
+		if (Input.GetKeyUp( KeyCode.L) || MidiInput.GetKnob (48, MidiInput.Filter.Realtime) > .5f) {
 			for (int i = 0; i < 8; i++) {
 				System.IO.File.WriteAllText ("Assets/athon/data/data_" + sessionName + i + ".txt", presets[i]);
 			}
