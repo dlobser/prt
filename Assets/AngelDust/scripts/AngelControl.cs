@@ -4,7 +4,7 @@ using System.IO;
 using System.Collections.Generic;
 
 
-public class midiLaserID : MonoBehaviour {
+public class AngelControl : MonoBehaviour {
 
 	public AudioManagerMic audiM;
 
@@ -53,6 +53,12 @@ public class midiLaserID : MonoBehaviour {
 
     public ViveWandControl ViveWand;
 
+	bool triggered = false;
+
+	public GameObject title;
+
+//	public ViveWandControl V1;
+//	public ViveWandControl V2;
 
 	void Start () {
 		
@@ -81,12 +87,12 @@ public class midiLaserID : MonoBehaviour {
 
 		for (int i = 0; i < 8; i++) {
 			presets [i] = (System.IO.File.ReadAllText ("Assets/athon/data/data_" + i + ".txt"));
-			print (presets [i]);
+//			print (presets [i]);
 //			d.readDials (System.IO.File.ReadAllText ("Assets/athon/data/data_" + i + ".txt"));
 		}
 		d.checkDials (true);
-//		d.readDials (presets [1]);
-
+		d.readDials ("0,1.340679,0.629921,0,8.897638,5.538507,0,9.479017,0,0,0,0,0,10,0,0,2.519684,0,0,0,0,0,0,0,0,0,0,,2.362213,0,0,0,0,0,0,0,0,0.5633354,6.284904,0,0.5511856,0,0,0,0,0,0,0,0,0,0,0,0,0,0,");
+		d.knobs [1, 0] = 0;
 	}
 
 	//get knob
@@ -123,30 +129,44 @@ public class midiLaserID : MonoBehaviour {
 	}
 
 	void Update () {
-		if(!playing)
-			d.checkDials (false);
-		if ( Input.GetKeyUp( KeyCode.U) && recordMode || MidiInput.GetKnob (45,MidiInput.Filter.Realtime) > .5f) {
-			recordMode = false;
-			Debug.Log (recordMode);
+
+
+
+		if (!triggered) {
+			if (d.dials [0, 7] > 0)
+				d.dials [0, 7] *= .99f;
+			if (d.knobs [1, 0] < .5f)
+				d.knobs [1, 0] += .01f;
+//			d.readDials ("0,1.340679,0.629921,0,8.897638,5.538507,0,0,0,0,0,0,0,10,0,0,2.519684,0,0,0,0,0,0,0,0,0,0,,2.362213,0,0,0,0,0,0,0,0,0.5633354,6.284904,0,0.5511856,0,0,0,0,0,0,0,0,0,0,0,0,0,0,");
+			if(d.dials[0,7]<.01f && d.knobs[1,0]>.48f)
+				triggered = true;
+
+//			Debug.Log (d.dials [0, 7]);
 		}
-		else if (Input.GetKeyUp( KeyCode.I) || MidiInput.GetKnob (44,MidiInput.Filter.Realtime) > .5f) {
-			recordMode = true;
-			Debug.Log (recordMode);
-		}
-		if (MidiInput.GetKnob (47, MidiInput.Filter.Realtime) > .5f) {
-			for (int i = 0; i < 8; i++) {
-				string s = texts [i].text;// System.IO.File.ReadAllText ("Assets/athon/data/data_" + i + ".txt");
-				print (s);
-				presets [i] = s;//(System.IO.File.ReadAllText ("Assets/athon/data/data_" + i + ".txt"));
-				d.readDials ( s);//(System.IO.File.ReadAllText ("Assets/athon/data/data_" + i + ".txt"));
-			}
-		}
-		if (Input.GetKeyUp( KeyCode.L) || MidiInput.GetKnob (48, MidiInput.Filter.Realtime) > .5f) {
-			for (int i = 0; i < 8; i++) {
-				System.IO.File.WriteAllText ("Assets/athon/data/data_" + sessionName + i + ".txt", presets[i]);
-			}
-			Debug.Log ("saved");
-		}
+//		if(!playing)
+//			d.checkDials (false);
+//		if ( Input.GetKeyUp( KeyCode.U) && recordMode || MidiInput.GetKnob (45,MidiInput.Filter.Realtime) > .5f) {
+//			recordMode = false;
+//			Debug.Log (recordMode);
+//		}
+//		else if (Input.GetKeyUp( KeyCode.I) || MidiInput.GetKnob (44,MidiInput.Filter.Realtime) > .5f) {
+//			recordMode = true;
+//			Debug.Log (recordMode);
+//		}
+//		if (MidiInput.GetKnob (47, MidiInput.Filter.Realtime) > .5f) {
+//			for (int i = 0; i < 8; i++) {
+//				string s = texts [i].text;// System.IO.File.ReadAllText ("Assets/athon/data/data_" + i + ".txt");
+//				print (s);
+//				presets [i] = s;//(System.IO.File.ReadAllText ("Assets/athon/data/data_" + i + ".txt"));
+//				d.readDials ( s);//(System.IO.File.ReadAllText ("Assets/athon/data/data_" + i + ".txt"));
+//			}
+//		}
+//		if (Input.GetKeyUp( KeyCode.L) || MidiInput.GetKnob (48, MidiInput.Filter.Realtime) > .5f) {
+//			for (int i = 0; i < 8; i++) {
+//				System.IO.File.WriteAllText ("Assets/athon/data/data_" + sessionName + i + ".txt", presets[i]);
+//			}
+//			Debug.Log ("saved");
+//		}
 //		if (Input.any) {
 			for (int i = 0; i < 8; i++) {
 //				Debug.Log (keyCodes [i]);
@@ -162,68 +182,68 @@ public class midiLaserID : MonoBehaviour {
 			}
 //		}
 
-		if (Input.GetKeyUp (KeyCode.R)) {
-			recording = !recording;
-			audiM.Play ();
-//			d.checkDials (true);
-			Debug.Log (recording);
-		}
-		if (Input.GetKeyUp (KeyCode.M)) {
-			if (!Menu.transform.parent.gameObject.activeInHierarchy)
-				Menu.transform.parent.gameObject.SetActive (true);
-			else
-				Menu.transform.parent.gameObject.SetActive (false);
-		}
-		if (recording) {
-			recordCounter += Time.deltaTime;
-			if (recordCounter > recordFrequency) {
-				recordCounter = 0;
-				d.makeBuffer (audiM.GetBands (new int[]{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 }));
-			}
-			d.makeAudioBuffer(audiM.GetBands (new int[]{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 }));
-		}
-		if (Input.GetKeyUp (KeyCode.S)) {
-			System.IO.File.WriteAllText ("Assets/athon/data/session_" + sessionName + ".txt",d.buffer);
-			System.IO.File.WriteAllText ("Assets/athon/data/sessionAudio_" + sessionName + ".txt",d.audioBuffer);
-		}
-		if (Input.GetKeyUp (KeyCode.P)) {
-			if (!buffered) {
-				d.readBuffer(System.IO.File.ReadAllText ("Assets/athon/data/session_" + sessionName + ".txt"));
-				d.readAudioBuffer(System.IO.File.ReadAllText ("Assets/athon/data/sessionAudio_" + sessionName + ".txt"));
-				buffered = true;
-			}
-			playing = !playing;
-			startTime = Time.time;
-			startBufferTime = d.timeBuffer [0];
-			audiM.Play ();
-		}
-		if (playing) {
-			if (playCounter < d.timeBuffer.Length - 1) {
-				if (Time.time - startTime > d.timeBuffer [playCounter] - startBufferTime) {
-					float diff = (d.timeBuffer[playCounter] - startBufferTime - Time.time - startTime) /
-						(d.timeBuffer[playCounter] - startBufferTime - 
-							d.timeBuffer[playCounter-1] - startBufferTime);
-					d.readDials (d.presetBuffer [playCounter-1], d.presetBuffer [playCounter], diff);
-				}
-				while (d.timeBuffer [playCounter] - startBufferTime < Time.time - startTime) {
-					playCounter++;
-				}
-				while (d.timeAudioBuffer [audioPlayCounter] - startBufferTime < Time.time - startTime) {
-					audioPlayCounter++;
-				}
-			} else {
-				playing = false;
-				Debug.Log ("playtime is OVER!");
-				//Camera.main.gameObject.GetComponent<CaptureStandard> ().enabled = false;
-			}
-			if (Input.GetKeyUp (KeyCode.O)) {
-				playing = !playing;
-				//Camera.main.gameObject.GetComponent<CaptureStandard> ().enabled = false;
-			}
-		}
-		if (Input.GetKeyUp (KeyCode.B)) {
-			audiM.Play ();
-		}
+//		if (Input.GetKeyUp (KeyCode.R)) {
+//			recording = !recording;
+//			audiM.Play ();
+////			d.checkDials (true);
+//			Debug.Log (recording);
+//		}
+//		if (Input.GetKeyUp (KeyCode.M)) {
+//			if (!Menu.transform.parent.gameObject.activeInHierarchy)
+//				Menu.transform.parent.gameObject.SetActive (true);
+//			else
+//				Menu.transform.parent.gameObject.SetActive (false);
+//		}
+//		if (recording) {
+//			recordCounter += Time.deltaTime;
+//			if (recordCounter > recordFrequency) {
+//				recordCounter = 0;
+//				d.makeBuffer (audiM.GetBands (new int[]{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 }));
+//			}
+//			d.makeAudioBuffer(audiM.GetBands (new int[]{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 }));
+//		}
+//		if (Input.GetKeyUp (KeyCode.S)) {
+//			System.IO.File.WriteAllText ("Assets/athon/data/session_" + sessionName + ".txt",d.buffer);
+//			System.IO.File.WriteAllText ("Assets/athon/data/sessionAudio_" + sessionName + ".txt",d.audioBuffer);
+//		}
+//		if (Input.GetKeyUp (KeyCode.P)) {
+//			if (!buffered) {
+//				d.readBuffer(System.IO.File.ReadAllText ("Assets/athon/data/session_" + sessionName + ".txt"));
+//				d.readAudioBuffer(System.IO.File.ReadAllText ("Assets/athon/data/sessionAudio_" + sessionName + ".txt"));
+//				buffered = true;
+//			}
+//			playing = !playing;
+//			startTime = Time.time;
+//			startBufferTime = d.timeBuffer [0];
+//			audiM.Play ();
+//		}
+//		if (playing) {
+//			if (playCounter < d.timeBuffer.Length - 1) {
+//				if (Time.time - startTime > d.timeBuffer [playCounter] - startBufferTime) {
+//					float diff = (d.timeBuffer[playCounter] - startBufferTime - Time.time - startTime) /
+//						(d.timeBuffer[playCounter] - startBufferTime - 
+//							d.timeBuffer[playCounter-1] - startBufferTime);
+//					d.readDials (d.presetBuffer [playCounter-1], d.presetBuffer [playCounter], diff);
+//				}
+//				while (d.timeBuffer [playCounter] - startBufferTime < Time.time - startTime) {
+//					playCounter++;
+//				}
+//				while (d.timeAudioBuffer [audioPlayCounter] - startBufferTime < Time.time - startTime) {
+//					audioPlayCounter++;
+//				}
+//			} else {
+//				playing = false;
+//				Debug.Log ("playtime is OVER!");
+//				//Camera.main.gameObject.GetComponent<CaptureStandard> ().enabled = false;
+//			}
+//			if (Input.GetKeyUp (KeyCode.O)) {
+//				playing = !playing;
+//				//Camera.main.gameObject.GetComponent<CaptureStandard> ().enabled = false;
+//			}
+//		}
+//		if (Input.GetKeyUp (KeyCode.B)) {
+//			audiM.Play ();
+//		}
 				
 		float t = Time.deltaTime;
 
@@ -278,12 +298,21 @@ public class midiLaserID : MonoBehaviour {
 		C.GetComponent<Renderer>().sharedMaterial.SetFloat ("_SinAdd", d.dials[0,8]*.1f*gn (9,d.knobs[0,8],10) );
       
 		// C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Gravity", d.dials[1, 4] * .1f);
-        if (ViveWand.click)
-		    C.GetComponent<Renderer>().sharedMaterial.SetFloat ("_Gravity", 1 );
+		if(controller.GetComponent<SteamVR_TrackedController>().triggerPressed)
+//        if (ViveWand.click)
+		    C.GetComponent<Renderer>().sharedMaterial.SetFloat ("_Repel1", -1 );
         else
-            C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Gravity", 0);
-		
-        Debug.Log(ViveWand.click);
+            C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Repel1", 1);
+
+		if(controller2.GetComponent<SteamVR_TrackedController>().triggerPressed)
+			C.GetComponent<Renderer>().sharedMaterial.SetFloat ("_Repel2", -1 );
+		else
+			C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Repel2", 1);
+
+//		float strength1 = controller.GetComponent<SteamVR_TrackedController> ();
+		Debug.Log(SteamVR_Controller.Input (1).GetAxis ().y);
+		Debug.Log(SteamVR_Controller.Input (1).GetAxis ().x);
+
         wire.GetComponent<wireFrameAthon>().lineWidth = d.knobs[1,0] * .005f;
 		wire.GetComponent<Renderer>().sharedMaterial.SetColor("_Color",new Color(1,1,1, d.knobs[1,1] * .02f));
 
