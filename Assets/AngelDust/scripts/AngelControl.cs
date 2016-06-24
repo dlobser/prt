@@ -103,12 +103,13 @@ public class AngelControl : MonoBehaviour {
 
 	//get knob
 	float gn(int a, float w,float m){
-		float r = 0;
-		if (!playing)
-			r = 1 + (audiM.GetBands (new int[]{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 }) * w * m);
-		else if (playCounter < d.volumeBuffer.Length)
-			r = 1 + d.volumeAudioBuffer [audioPlayCounter];//* w * m;
-		return r;
+//		float r = 0;
+//		if (!playing)
+//			r = 1 + (audiM.GetBands (new int[]{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 }) * w * m);
+//		else if (playCounter < d.volumeBuffer.Length)
+//			r = 1 + d.volumeAudioBuffer [audioPlayCounter];//* w * m;
+//		return r;
+		return 1;
 	}
 
 	void switch3DObject(float which){

@@ -81,6 +81,7 @@ public class wireFrameAthon : MonoBehaviour {
 		GameObject n = new GameObject ();
 		n.AddComponent<MeshRenderer> ();
 		n.AddComponent<MeshFilter> ();
+		n.AddComponent<updateBounds> ();
 //		n.AddComponent<Renderer>();
 		meshObjects.Add(n);
 	}
