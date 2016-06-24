@@ -63,12 +63,14 @@ public class AngelControl : MonoBehaviour {
     float prevSpeed1;
     float prevSpeed2;
 
+    float titleAlpha = 1;
+    
 //	public ViveWandControl V1;
 //	public ViveWandControl V2;
 
 	void Start () {
-		
-//		Application.targetFrameRate = 30;
+
+        //		Application.targetFrameRate = 30;
 
 		keyCodes = new KeyCode[] {
 			KeyCode.Alpha0,
@@ -139,7 +141,7 @@ public class AngelControl : MonoBehaviour {
 
 
 
-		if (!triggered) {
+		if (!triggered && title.GetComponent<Collided>().triggered) {
 			if (d.dials [0, 7] > 0)
 				d.dials [0, 7] *= .99f;
 			if (d.knobs [1, 0] < .2f)
@@ -147,9 +149,13 @@ public class AngelControl : MonoBehaviour {
 //			d.readDials ("0,1.340679,0.629921,0,8.897638,5.538507,0,0,0,0,0,0,0,10,0,0,2.519684,0,0,0,0,0,0,0,0,0,0,,2.362213,0,0,0,0,0,0,0,0,0.5633354,6.284904,0,0.5511856,0,0,0,0,0,0,0,0,0,0,0,0,0,0,");
 			if(d.dials[0,7]<.01f && d.knobs[1,0]>.48f)
 				triggered = true;
-
+            titleAlpha *= .9f;
+            title.GetComponent<SpriteRenderer>().material.color = new Color(1, 1, 1, titleAlpha);
 //			Debug.Log (d.dials [0, 7]);
 		}
+        if (triggered) {
+            title.SetActive(false);
+        }
 //		if(!playing)
 //			d.checkDials (false);
 //		if ( Input.GetKeyUp( KeyCode.U) && recordMode || MidiInput.GetKnob (45,MidiInput.Filter.Realtime) > .5f) {
@@ -318,8 +324,8 @@ public class AngelControl : MonoBehaviour {
 		else
 			C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Repel2", 1);
 
-        float a = SteamVR_Controller.Input(SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.FarthestRight)).GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0).x;
-        float b = SteamVR_Controller.Input(SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.FarthestLeft)).GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0).x;
+        float b = SteamVR_Controller.Input(SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.FarthestRight)).GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0).x;
+        float a = SteamVR_Controller.Input(SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.FarthestLeft)).GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0).x;
         if (a != prevSpeed1 && a!=0)
             prevSpeed1 = a;
         if (b != prevSpeed2 && b!=0)
