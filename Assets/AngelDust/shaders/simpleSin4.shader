@@ -10,6 +10,8 @@
 		_Pos2("pos",Vector) = (0,0,0,0)
 		_Repel1("repel",float)=1
 		_Repel2("repel",float)=1
+		_Force1("force",float) = 1
+		_Force2("force",float) = 1
 	}
 	SubShader
 	{
@@ -48,6 +50,8 @@
 			float _Freq;
 			float _Repel1;
 			float _Repel2;
+			float _Force1;
+			float _Force2;
 
 
 			v2f vert (appdata v)
@@ -70,18 +74,20 @@
 //				fixed4 col = tex2D(_MainTex, i.uv)*_Freq;
 				fixed4 vel = tex2D(_Feedback, i.uv);
 				// apply fog
-
+				
+				_Force1 += 1;
+				_Force2 += 1;
 				float d = max(distance(col.xyz, _Pos2.xyz)*10., 1.0);
-				fixed4 delt = normalize(_Pos2 - col) * _Repel2;
-				float4 superNoise = max(0,(_Repel2*-1))*lerp(float4(0.0,0.0,0.0,0.0),float4(sin(i.uv.x*14385+col.x*314358.3),sin(col.y*13434.5),sin(i.uv.y*438972+col.z*294298.3),0.0),max(0.0,1.-d*.5));
+				fixed4 delt = normalize(_Pos2 - col) * _Repel1;
+				float4 superNoise = max(0,(_Repel1*-1))*lerp(float4(0.0,0.0,0.0,0.0),float4(sin(i.uv.x*14385+col.x*314358.3),sin(i.uv.y*98743957+col.y*13434.5),sin(i.uv.y*438972+col.z*294298.3),0.0),max(0.0,1.-d*.75));
 				float4 gravity1 = ((delt) / (d*d*d)) + superNoise;// (vel*.98) + ((delt) / (d*d*d));
 
 				d = max(distance(col.xyz,_Pos.xyz)*10.,1.0);
-				delt = normalize(_Pos-col) * _Repel1;
-				superNoise = max(0,(_Repel1*-1))*lerp(float4(0.0,0.0,0.0,0.0),float4(sin(i.uv.x*14385+col.x*314358.3),sin(col.y*13434.5),sin(i.uv.y*438972+col.z*294298.3),0.0),max(0.0,1.-d*.5));
+				delt = normalize(_Pos-col) * _Repel2;
+				superNoise = max(0,(_Repel2*-1))*lerp(float4(0.0,0.0,0.0,0.0),float4(sin(i.uv.x*14385+col.x*314358.3),sin(i.uv.y * 98743957 + col.y*13434.5),sin(i.uv.y*438972+col.z*294298.3),0.0),max(0.0,1.-d*.75));
 				float4 gravity2 = ((delt) / (d*d*d)) + superNoise;// (vel*.98) + ((delt) / (d*d*d));
 
-				return vel*.98 + ((gravity1+gravity2)*.5);// vel*.98+ ((gravity1+gravity2)*.5);
+				return vel*.98 + ((_Force1*gravity1+_Force2*gravity2)*.5);// vel*.98+ ((gravity1+gravity2)*.5);
 			}
 			ENDCG
 		}

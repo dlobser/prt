@@ -51,11 +51,17 @@ public class AngelControl : MonoBehaviour {
     public GameObject controller;
     public GameObject controller2;
 
+    public GameObject tracker1;
+    public GameObject tracker2;
+
     public ViveWandControl ViveWand;
 
 	bool triggered = false;
 
 	public GameObject title;
+
+    float prevSpeed1;
+    float prevSpeed2;
 
 //	public ViveWandControl V1;
 //	public ViveWandControl V2;
@@ -135,7 +141,7 @@ public class AngelControl : MonoBehaviour {
 		if (!triggered) {
 			if (d.dials [0, 7] > 0)
 				d.dials [0, 7] *= .99f;
-			if (d.knobs [1, 0] < .5f)
+			if (d.knobs [1, 0] < .2f)
 				d.knobs [1, 0] += .01f;
 //			d.readDials ("0,1.340679,0.629921,0,8.897638,5.538507,0,0,0,0,0,0,0,10,0,0,2.519684,0,0,0,0,0,0,0,0,0,0,,2.362213,0,0,0,0,0,0,0,0,0.5633354,6.284904,0,0.5511856,0,0,0,0,0,0,0,0,0,0,0,0,0,0,");
 			if(d.dials[0,7]<.01f && d.knobs[1,0]>.48f)
@@ -276,18 +282,18 @@ public class AngelControl : MonoBehaviour {
 			
 		C.GetComponent<Renderer>().sharedMaterial.SetVector ("_Pos", 
 			new Vector4(
-                controller.transform.position.x,
-                controller.transform.position.y,
-                controller.transform.position.z,
+               tracker1.transform.position.x,
+               tracker1.transform.position.y,
+               tracker1.transform.position.z,
                 //Mathf.Sin(Mathf.Pow(d.dials[1,0],2)*Time.time*3f)*d.dials[1,3]*.2f,
                 //Mathf.Cos(Mathf.Pow(d.dials[1,1],2)*Time.time*3f)*d.dials[1,3]*.2f,
                 //Mathf.Sin(Mathf.Pow(d.dials[1,2],2)*Time.time*3f)*d.dials[1,3]*.2f,
                 0 ));
         C.GetComponent<Renderer>().sharedMaterial.SetVector("_Pos2",
             new Vector4(
-                controller2.transform.position.x,
-                controller2.transform.position.y,
-                controller2.transform.position.z,
+                tracker2.transform.position.x,
+                tracker2.transform.position.y,
+                tracker2.transform.position.z,
                 0));
         C.GetComponent<Renderer>().sharedMaterial.SetVector ("_Speeds", 
 			new Vector4(
@@ -296,9 +302,11 @@ public class AngelControl : MonoBehaviour {
 				d.dials[1,7],0 ));
 		initial.GetComponent<Renderer>().sharedMaterial.SetColor ("_Color",new Color(1,1,1, d.dials [0,7]*.1f*gn (8,d.knobs[0,7],10)  ));
 		C.GetComponent<Renderer>().sharedMaterial.SetFloat ("_SinAdd", d.dials[0,8]*.1f*gn (9,d.knobs[0,8],10) );
-      
-		// C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Gravity", d.dials[1, 4] * .1f);
-		if(controller.GetComponent<SteamVR_TrackedController>().triggerPressed)
+
+
+
+        // C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Gravity", d.dials[1, 4] * .1f);
+        if (controller.GetComponent<SteamVR_TrackedController>().triggerPressed)
 //        if (ViveWand.click)
 		    C.GetComponent<Renderer>().sharedMaterial.SetFloat ("_Repel1", -1 );
         else
@@ -309,9 +317,14 @@ public class AngelControl : MonoBehaviour {
 		else
 			C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Repel2", 1);
 
-//		float strength1 = controller.GetComponent<SteamVR_TrackedController> ();
-		Debug.Log(SteamVR_Controller.Input (1).GetAxis ().y);
-		Debug.Log(SteamVR_Controller.Input (1).GetAxis ().x);
+        float a = SteamVR_Controller.Input(SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.FarthestRight)).GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0).x;
+        float b = SteamVR_Controller.Input(SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.FarthestLeft)).GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0).x;
+        if (a != prevSpeed1 && a!=0)
+            prevSpeed1 = a;
+        if (b != prevSpeed2 && b!=0)
+            prevSpeed2 = b;
+        C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Force1", prevSpeed2);
+        C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Force2", prevSpeed1);
 
         wire.GetComponent<wireFrameAthon>().lineWidth = d.knobs[1,0] * .005f;
 		wire.GetComponent<Renderer>().sharedMaterial.SetColor("_Color",new Color(1,1,1, d.knobs[1,1] * .02f));
