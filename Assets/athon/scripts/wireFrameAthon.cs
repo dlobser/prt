@@ -20,6 +20,8 @@ public class wireFrameAthon : MonoBehaviour {
 	public float saturation=1;
 	public float brightness=1;
 
+    public RenderTexture[] resizeTextures;
+
 	public RenderTexture renderTex;
 
 	public GameObject ping;
@@ -103,59 +105,70 @@ public class wireFrameAthon : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-
-		meshObjects = new List<GameObject>();
-		makeMesh ();
-		connectShaders ();
-		
-		vertPositions = new List<Vector3>();
-		
-//		MRend = GetComponent<MeshRenderer> ();
-//		MFilter = GetComponent<MeshFilter> ();
-//		MRend.sharedMaterial = lineMat;
-//		rend = GetComponent<Renderer> ();
-		
-		if (colors.Length < 1)
-		colors = new float[]{.5f};
-		
-		edges = new Hashtable ();
-		Verts = new Hashtable ();
-		VertNormCheck = new Hashtable ();
-		
-		
-//		mesh = wireFrame.GetComponent<MeshFilter> ().mesh;
-		
-		texture = new Texture2D (100, 1, TextureFormat.RGBAFloat,false);
-		texture.filterMode = FilterMode.Point;
-		posTexture = new Texture2D (100, 1, TextureFormat.RGBAFloat,false);
-		posTexture.filterMode = FilterMode.Point;
-		lineMat.SetFloat("_Tile",textureTile);
-//		rend.sharedMaterial = lineMat;
-		if (lineTex == null)
-			lineTex = lineMat.GetTexture ("_SpriteTex") as Texture2D;
-		if (shadowTex == null)
-			shadowTex = lineTex;
-//		rend.sharedMaterial.SetTexture ("_MainTex", texture);
-//		rend.sharedMaterial.SetTexture ("_SpriteTex", lineTex);
-//		rend.sharedMaterial.SetTexture ("_ShadowTex", shadowTex);
-//		rend.sharedMaterial.SetTexture ("_PosTex", posTexture);
-//		rend.sharedMaterial.SetTexture ("_Offset", renderTex);
-
-		ping.GetComponent<Renderer> ().sharedMaterial = pingMat;
-
-		pingMat.SetTexture ("_MainTex", posTexture);
-		
-		verts = mesh.vertices;
-		faces = mesh.triangles;
-		
-//		makeEdges ();
-		makeSimpleLines ();
-		//		SetPoints (particlePos);
-		makeTexture ();
-		
+        //Init();
 	}
 
-	void meshElements(){
+    public void Init() {
+
+        for (int i = 0; i < resizeTextures.Length; i++) {
+            resizeTextures[i] = new RenderTexture(numPoints, numPoints, 24);
+            resizeTextures[i].filterMode = FilterMode.Point;
+           // resizeTextures[i].height = numPoints;
+           // resizeTextures[i].width = numPoints;
+        }
+
+        meshObjects = new List<GameObject>();
+        makeMesh();
+        connectShaders();
+
+        vertPositions = new List<Vector3>();
+
+        //		MRend = GetComponent<MeshRenderer> ();
+        //		MFilter = GetComponent<MeshFilter> ();
+        //		MRend.sharedMaterial = lineMat;
+        //		rend = GetComponent<Renderer> ();
+
+        if (colors.Length < 1)
+            colors = new float[] { .5f };
+
+        edges = new Hashtable();
+        Verts = new Hashtable();
+        VertNormCheck = new Hashtable();
+
+
+        //		mesh = wireFrame.GetComponent<MeshFilter> ().mesh;
+
+        texture = new Texture2D(100, 1, TextureFormat.RGBAFloat, false);
+        texture.filterMode = FilterMode.Point;
+        posTexture = new Texture2D(100, 1, TextureFormat.RGBAFloat, false);
+        posTexture.filterMode = FilterMode.Point;
+        lineMat.SetFloat("_Tile", textureTile);
+        //		rend.sharedMaterial = lineMat;
+        if (lineTex == null)
+            lineTex = lineMat.GetTexture("_SpriteTex") as Texture2D;
+        if (shadowTex == null)
+            shadowTex = lineTex;
+        //		rend.sharedMaterial.SetTexture ("_MainTex", texture);
+        //		rend.sharedMaterial.SetTexture ("_SpriteTex", lineTex);
+        //		rend.sharedMaterial.SetTexture ("_ShadowTex", shadowTex);
+        //		rend.sharedMaterial.SetTexture ("_PosTex", posTexture);
+        //		rend.sharedMaterial.SetTexture ("_Offset", renderTex);
+
+        ping.GetComponent<Renderer>().sharedMaterial = pingMat;
+
+        pingMat.SetTexture("_MainTex", posTexture);
+
+        verts = mesh.vertices;
+        faces = mesh.triangles;
+      
+        //		makeEdges ();
+        makeSimpleLines();
+        //		SetPoints (particlePos);
+        makeTexture();
+
+    }
+
+    void meshElements(){
 		
 		
 		count = -1;
@@ -442,6 +455,7 @@ public class wireFrameAthon : MonoBehaviour {
 //		MRend.sharedMaterial.SetFloat ("_ShadowSpeed", shadowSpeed);
 //		MRend.sharedMaterial.SetFloat ("_ShadowTile", shadowTile);
 //		MRend.sharedMaterial.SetFloat ("_UNPnts", edges.Count*4);
+        if(MRend!=null)
 		MRend.sharedMaterial.SetFloat ("_LineWidth", lineWidth);
 //		MRend.sharedMaterial.SetFloat ("_HueShift", hueShift);
 		

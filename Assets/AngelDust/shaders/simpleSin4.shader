@@ -25,7 +25,8 @@
 			#pragma fragment frag
 			// make fog work
 			#pragma multi_compile_fog
-			#include "noiseSimplex.cginc"
+			#pragma target 3.0
+			//#include "noiseSimplex.cginc"
 			#include "UnityCG.cginc"
 
 			struct appdata
@@ -70,15 +71,15 @@
 			fixed4 frag (v2f i) : SV_Target
 			{
 				// sample the texture
-				fixed4 col = tex2D(_MainTex, i.uv);
+				float4 col = tex2D(_MainTex, i.uv);
 //				fixed4 col = tex2D(_MainTex, i.uv)*_Freq;
-				fixed4 vel = tex2D(_Feedback, i.uv);
+				float4 vel = tex2D(_Feedback, i.uv);
 				// apply fog
 				
 				_Force1 += 1;
 				_Force2 += 1;
 				float d = max(distance(col.xyz, _Pos2.xyz)*10., 1.0);
-				fixed4 delt = normalize(_Pos2 - col) * _Repel1;
+				float4 delt = normalize(_Pos2 - col) * _Repel1;
 				float4 superNoise = max(0,(_Repel1*-1))*lerp(float4(0.0,0.0,0.0,0.0),float4(sin(i.uv.x*14385+col.x*314358.3),sin(i.uv.y*98743957+col.y*13434.5),sin(i.uv.y*438972+col.z*294298.3),0.0),max(0.0,1.-d*.75));
 				float4 gravity1 = ((delt) / (d*d*d)) + superNoise;// (vel*.98) + ((delt) / (d*d*d));
 

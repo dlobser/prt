@@ -58,11 +58,11 @@
 			{
 				// sample the texture
 				fixed4 col = tex2D(_MainTex, i.uv);
-				float d = distance(col,f4(0.0));
-				fixed4 angle = col-f4(0.0);
+				float d =  distance(col,f4(0.0));
+				fixed4 angle = col;// -f4(0.0);
 				// apply fog
 //				UNITY_APPLY_FOG(i.fogCoord, col);	
-				float force = .0001;
+				//float force = .0001;
 //				fixed4 vel = (normalize(col-_Pos) * force)/(distance(col,_Pos));
 				float dist = min(1.0,max(0.,(1-d)+3.));	
 //				return col+_Amount*tex2D(_Other,i.uv)*cos(dist*3.14);	

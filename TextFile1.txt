@@ -1,0 +1,3 @@
+float a = SteamVR_Controller.Input (SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.FarthestRight)).GetAxis (Valve.VR.EVRButtonId.k_EButton_Axis0).x;
+float b = SteamVR_Controller.Input(SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.FarthestLeft)).GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0).x;
+     

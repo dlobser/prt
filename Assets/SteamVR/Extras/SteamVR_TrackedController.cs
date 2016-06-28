@@ -21,6 +21,8 @@ public class SteamVR_TrackedController : MonoBehaviour
     public bool padTouched = false;
     public bool gripped = false;
 
+    public Vector2 padPosition = Vector2.zero;
+
     public event ClickedEventHandler MenuButtonClicked;
     public event ClickedEventHandler MenuButtonUnclicked;
     public event ClickedEventHandler TriggerClicked;
@@ -141,6 +143,8 @@ public class SteamVR_TrackedController : MonoBehaviour
                 e.flags = (uint)controllerState.ulButtonPressed;
                 e.padX = controllerState.rAxis0.x;
                 e.padY = controllerState.rAxis0.y;
+                padPosition.x = e.padX;
+                padPosition.y = e.padY;
                 OnTriggerClicked(e);
 
             }
@@ -152,6 +156,8 @@ public class SteamVR_TrackedController : MonoBehaviour
                 e.flags = (uint)controllerState.ulButtonPressed;
                 e.padX = controllerState.rAxis0.x;
                 e.padY = controllerState.rAxis0.y;
+                padPosition.x = e.padX;
+                padPosition.y = e.padY;
                 OnTriggerUnclicked(e);
             }
 
@@ -164,6 +170,8 @@ public class SteamVR_TrackedController : MonoBehaviour
                 e.flags = (uint)controllerState.ulButtonPressed;
                 e.padX = controllerState.rAxis0.x;
                 e.padY = controllerState.rAxis0.y;
+                padPosition.x = e.padX;
+                padPosition.y = e.padY;
                 OnGripped(e);
 
             }
@@ -175,6 +183,8 @@ public class SteamVR_TrackedController : MonoBehaviour
                 e.flags = (uint)controllerState.ulButtonPressed;
                 e.padX = controllerState.rAxis0.x;
                 e.padY = controllerState.rAxis0.y;
+                padPosition.x = e.padX;
+                padPosition.y = e.padY;
                 OnUngripped(e);
             }
 
@@ -187,6 +197,8 @@ public class SteamVR_TrackedController : MonoBehaviour
                 e.flags = (uint)controllerState.ulButtonPressed;
                 e.padX = controllerState.rAxis0.x;
                 e.padY = controllerState.rAxis0.y;
+                padPosition.x = e.padX;
+                padPosition.y = e.padY;
                 OnPadClicked(e);
             }
             else if (pad == 0L && padPressed)
@@ -197,6 +209,8 @@ public class SteamVR_TrackedController : MonoBehaviour
                 e.flags = (uint)controllerState.ulButtonPressed;
                 e.padX = controllerState.rAxis0.x;
                 e.padY = controllerState.rAxis0.y;
+                padPosition.x = e.padX;
+                padPosition.y = e.padY;
                 OnPadUnclicked(e);
             }
 
@@ -209,6 +223,8 @@ public class SteamVR_TrackedController : MonoBehaviour
                 e.flags = (uint)controllerState.ulButtonPressed;
                 e.padX = controllerState.rAxis0.x;
                 e.padY = controllerState.rAxis0.y;
+                padPosition.x = e.padX;
+                padPosition.y = e.padY;
                 OnMenuClicked(e);
             }
             else if (menu == 0L && menuPressed)
@@ -219,6 +235,8 @@ public class SteamVR_TrackedController : MonoBehaviour
                 e.flags = (uint)controllerState.ulButtonPressed;
                 e.padX = controllerState.rAxis0.x;
                 e.padY = controllerState.rAxis0.y;
+                padPosition.x = e.padX;
+                padPosition.y = e.padY;
                 OnMenuUnclicked(e);
             }
 
@@ -231,6 +249,8 @@ public class SteamVR_TrackedController : MonoBehaviour
                 e.flags = (uint)controllerState.ulButtonPressed;
                 e.padX = controllerState.rAxis0.x;
                 e.padY = controllerState.rAxis0.y;
+                padPosition.x = e.padX;
+                padPosition.y = e.padY;
                 OnPadTouched(e);
 
             }
@@ -242,6 +262,8 @@ public class SteamVR_TrackedController : MonoBehaviour
                 e.flags = (uint)controllerState.ulButtonPressed;
                 e.padX = controllerState.rAxis0.x;
                 e.padY = controllerState.rAxis0.y;
+                padPosition.x = e.padX;
+                padPosition.y = e.padY;
                 OnPadUntouched(e);
             }
         }
