@@ -17,15 +17,15 @@ public class ViveWandControl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        var trackedController = controller1.GetComponent<SteamVR_TrackedController>();
-        var trackedController2 = controller2.GetComponent<SteamVR_TrackedController>();
+        var trackedController = controller1.GetComponent<SteamVR_TrackedController1>();
+        var trackedController2 = controller2.GetComponent<SteamVR_TrackedController1>();
 
 
-        trackedController.TriggerClicked += new ClickedEventHandler(DoClick);
-        trackedController.TriggerUnclicked += new ClickedEventHandler(DoUnClick);
+        trackedController.TriggerClicked += new ClickedEventHandler1(DoClick);
+        trackedController.TriggerUnclicked += new ClickedEventHandler1(DoUnClick);
 
-        trackedController.TriggerClicked += new ClickedEventHandler(DoPad);
-        trackedController.TriggerUnclicked += new ClickedEventHandler(DoUnpad);
+        trackedController.TriggerClicked += new ClickedEventHandler1(DoPad);
+        trackedController.TriggerUnclicked += new ClickedEventHandler1(DoUnpad);
 
         Debug.Log(trackedController);
 
@@ -35,7 +35,7 @@ public class ViveWandControl : MonoBehaviour {
 
     }
 
-    void DoStart(object sender, ClickedEventArgs e) {
+    void DoStart(object sender, ClickedEventArgs1 e) {
         //player.triggerPlay = true;
     }
     /*
@@ -44,19 +44,19 @@ public class ViveWandControl : MonoBehaviour {
         setup = false;
     }
     */
-    void DoClick(object sender, ClickedEventArgs e) {
+    void DoClick(object sender, ClickedEventArgs1 e) {
         click = true;
     }
 
-    void DoUnClick(object sender, ClickedEventArgs e) {
+    void DoUnClick(object sender, ClickedEventArgs1 e) {
         click = false;
     }
 
-    void DoPad(object sender, ClickedEventArgs e) {
+    void DoPad(object sender, ClickedEventArgs1 e) {
         pad = true;
     }
 
-    void DoUnpad(object sender, ClickedEventArgs e) {
+    void DoUnpad(object sender, ClickedEventArgs1 e) {
         pad = false;
     }
 

@@ -95,11 +95,11 @@ public class AngelControl : MonoBehaviour {
 		nob2 = new float[100];
 		switch3DObject (0);
 
-		for (int i = 0; i < 8; i++) {
-			presets [i] = (System.IO.File.ReadAllText ("Assets/athon/data/data_" + i + ".txt"));
+		//for (int i = 0; i < 8; i++) {
+			//presets [i] = (System.IO.File.ReadAllText ("Assets/athon/data/data_" + i + ".txt"));
 //			print (presets [i]);
 //			d.readDials (System.IO.File.ReadAllText ("Assets/athon/data/data_" + i + ".txt"));
-		}
+		//}
 		d.checkDials (true);
 		d.readDials ("0,1.340679,0.629921,0,8.897638,5.538507,0,9.479017,0,0,0,0,0,10,0,0,2.519684,0,0,0,0,0,0,0,0,0,0,,2.362213,0,0,0,0,0,0,0,0,0.5633354,6.284904,0,0.5511856,0,0,0,0,0,0,0,0,0,0,0,0,0,0,");
 		d.knobs [1, 0] = 0;
@@ -145,18 +145,20 @@ public class AngelControl : MonoBehaviour {
 
         if (!triggered && tracker1.GetComponent<Collided>().triggered ||  tracker2.GetComponent<Collided>().triggered ) {
 
+            /*
             int res = 128;
             if (tracker1.GetComponent<Collided>().res > 0)
                 res = tracker1.GetComponent<Collided>().res;
             else if (tracker2.GetComponent<Collided>().res > 0)
                 res = tracker2.GetComponent<Collided>().res;
 
-
+   
             if (!meshMade) {
-                wire.GetComponent<wireFrameAthon>().numPoints = res;
+                //wire.GetComponent<wireFrameAthon>().numPoints = res;
                 wire.GetComponent<wireFrameAthon>().Init();
                 meshMade = true;
             }
+             
             if (d.dials[0, 7] > 0)
                 d.dials[0, 7] *= .99f;
             if (d.knobs[1, 0] < .2f)
@@ -166,6 +168,11 @@ public class AngelControl : MonoBehaviour {
                 triggered = true;
             titleAlpha *= .9f;
             title.GetComponent<SpriteRenderer>().material.color = new Color(1, 1, 1, titleAlpha);
+            */
+            d.dials[0, 7] = 0;
+            d.knobs[1, 0] = .2f;
+            //d.knobs[1, 1] = .9f;
+            triggered = true;
             //			Debug.Log (d.dials [0, 7]);
         }
         if (triggered) {
@@ -196,18 +203,18 @@ public class AngelControl : MonoBehaviour {
         //			Debug.Log ("saved");
         //		}
         //		if (Input.any) {
-        for (int i = 0; i < 8; i++) {
+       // for (int i = 0; i < 8; i++) {
             //				Debug.Log (keyCodes [i]);
-            if (Input.GetKeyUp(keyCodes[i])) {
-                if (recordMode) {
-                    presets[i] = d.recordDials();
-                } else {
-                    d.readDials(presets[i]);
-                    Menu.GetComponent<UIMidi>().setSliders();
-                }
+         //   if (Input.GetKeyUp(keyCodes[i])) {
+             //   if (recordMode) {
+             //       presets[i] = d.recordDials();
+             //   } else {
+             //       d.readDials(presets[i]);
+             //       Menu.GetComponent<UIMidi>().setSliders();
+             //   }
                 //					Debug.Log (presets [i]);
-            }
-        }
+          //  }
+     //   }
         //		}
 
         //		if (Input.GetKeyUp (KeyCode.R)) {
@@ -286,7 +293,7 @@ public class AngelControl : MonoBehaviour {
         C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Speed", d.dials[0, 3] * .1f * gn(4, d.knobs[0, 3], 10));
         C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Freq", d.dials[0, 4] * .01f * gn(5, d.knobs[0, 4], 10) * (1 + d.dials[0, 5]) * 3f * gn(6, d.knobs[0, 5], 10));
         C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Which", d.dials[0, 6] * .1f);
-
+        /*
         for (int i = 0; i < 8; i++) {
             if (d.buttons[1, i] > .3f) {
                 if (recordMode) {
@@ -300,7 +307,7 @@ public class AngelControl : MonoBehaviour {
             }
 
         }
-
+        */
 
         C.GetComponent<Renderer>().sharedMaterial.SetVector("_Pos",
             new Vector4(
@@ -328,28 +335,32 @@ public class AngelControl : MonoBehaviour {
 
 
         // C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Gravity", d.dials[1, 4] * .1f);
-        if (controller.GetComponent<SteamVR_TrackedController>().triggerPressed)
+        if (controller.GetComponent<SteamVR_TrackedController1>().triggerPressed)
             //        if (ViveWand.click)
             C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Repel1", -1);
         else
             C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Repel1", 1);
 
-        if (controller2.GetComponent<SteamVR_TrackedController>().triggerPressed)
+        if (controller2.GetComponent<SteamVR_TrackedController1>().triggerPressed)
             C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Repel2", -1);
         else
             C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Repel2", 1);
 
-        float b = controller.GetComponent<SteamVR_TrackedController>().padPosition.x;
-        float a = controller2.GetComponent<SteamVR_TrackedController>().padPosition.x;
-       // float bC = (1+controller.GetComponent<SteamVR_TrackedController>().padPosition.y)*.5f;
-       // float aC = (1+controller2.GetComponent<SteamVR_TrackedController>().padPosition.y)*.5f;
+        float b = controller.GetComponent<SteamVR_TrackedController1>().padPosition.x;
+        float a = controller2.GetComponent<SteamVR_TrackedController1>().padPosition.x;
+        float by = controller.GetComponent<SteamVR_TrackedController1>().padPosition.y;
+        float ay = controller2.GetComponent<SteamVR_TrackedController1>().padPosition.y;
 
-       // if((1+tracker1.transform.localPosition.z)*.5f != aC) {
-       //     tracker1.transform.localPosition = new Vector3(0,0,aC);
-       // }
-      //  if ((1 + tracker2.transform.localPosition.z) * .5f != bC) {
-       //     tracker2.transform.localPosition = new Vector3(0, 0, bC);
-       // }
+        // float bC = (1+controller.GetComponent<SteamVR_TrackedController>().padPosition.y)*.5f;
+        // float aC = (1+controller2.GetComponent<SteamVR_TrackedController>().padPosition.y)*.5f;
+
+        // if((1+tracker1.transform.localPosition.z)*.5f != aC) {
+        //     tracker1.transform.localPosition = new Vector3(0,0,aC);
+        // }
+        //  if ((1 + tracker2.transform.localPosition.z) * .5f != bC) {
+        //     tracker2.transform.localPosition = new Vector3(0, 0, bC);
+        // }
+
         float colb = (b + 1) * .5f;
         float cola = (a + 1) * .5f;
       ///  tracker1.GetComponent<MeshRenderer>().material.color = new Color(col, 1 - col, .5f, 1);
@@ -359,14 +370,17 @@ public class AngelControl : MonoBehaviour {
         // float b = SteamVR_Controller.Input(SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.FarthestRight)).GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0).x;
         //  float a = SteamVR_Controller.Input(SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.FarthestLeft)).GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0).x;
         if (a != prevSpeed1 && a != 0) {
-            prevSpeed1 = a;
+            tracker1.transform.GetChild(0).GetComponent<setCTRLPosition>().setPos(new Vector2(a * .5f, ay * .5f));
+            prevSpeed1 = Mathf.Max(-1f,a-.05f);
             tracker1.GetComponent<MeshRenderer>().material.color = new Color(cola,.5f, 1 - cola, 1);
         }
-        if (b != prevSpeed2 && b != 0) { 
-             prevSpeed2 = b;
+        if (b != prevSpeed2 && b != 0) {
+            tracker2.transform.GetChild(0).GetComponent<setCTRLPosition>().setPos(new Vector2(b * .5f, by*.5f));
+            prevSpeed2 = Mathf.Max(-1f, b - .05f);
             tracker2.GetComponent<MeshRenderer>().material.color = new Color(colb,.5f, 1 - colb, 1);
 
         }
+        
         C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Force1", prevSpeed2);
         C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Force2", prevSpeed1);
 

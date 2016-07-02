@@ -77,7 +77,9 @@
 				// apply fog
 				
 				_Force1 += 1;
+			
 				_Force2 += 1;
+	
 				float d = max(distance(col.xyz, _Pos2.xyz)*10., 1.0);
 				float4 delt = normalize(_Pos2 - col) * _Repel1;
 				float4 superNoise = max(0,(_Repel1*-1))*lerp(float4(0.0,0.0,0.0,0.0),float4(sin(i.uv.x*14385+col.x*314358.3),sin(i.uv.y*98743957+col.y*13434.5),sin(i.uv.y*438972+col.z*294298.3),0.0),max(0.0,1.-d*.75));

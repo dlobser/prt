@@ -20,7 +20,7 @@ public class wireFrameAthon : MonoBehaviour {
 	public float saturation=1;
 	public float brightness=1;
 
-    public RenderTexture[] resizeTextures;
+    //public RenderTexture[] resizeTextures;
 
 	public RenderTexture renderTex;
 
@@ -36,7 +36,7 @@ public class wireFrameAthon : MonoBehaviour {
 	Hashtable VertNormCheck;
 	public float textureTile = 100;
 
-	public int numPoints = 256;
+	public int numPoints = 1024;
 	
 	Texture2D texture;
 	Texture2D posTexture;
@@ -105,17 +105,17 @@ public class wireFrameAthon : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-        //Init();
+        Init();
 	}
 
     public void Init() {
 
-        for (int i = 0; i < resizeTextures.Length; i++) {
-            resizeTextures[i] = new RenderTexture(numPoints, numPoints, 24);
-            resizeTextures[i].filterMode = FilterMode.Point;
+     //   for (int i = 0; i < resizeTextures.Length; i++) {
+      //      resizeTextures[i] = new RenderTexture(numPoints, numPoints, 24);
+      //      resizeTextures[i].filterMode = FilterMode.Point;
            // resizeTextures[i].height = numPoints;
            // resizeTextures[i].width = numPoints;
-        }
+      //  }
 
         meshObjects = new List<GameObject>();
         makeMesh();
@@ -137,10 +137,10 @@ public class wireFrameAthon : MonoBehaviour {
 
 
         //		mesh = wireFrame.GetComponent<MeshFilter> ().mesh;
-
-        texture = new Texture2D(100, 1, TextureFormat.RGBAFloat, false);
-        texture.filterMode = FilterMode.Point;
-        posTexture = new Texture2D(100, 1, TextureFormat.RGBAFloat, false);
+       // texture = new Texture2D(numPoints, numPoints, TextureFormat.RGBA32, false);
+        //texture = new Texture2D(numPoints, numPoints, TextureFormat.RGBAFloat, false);
+       // texture.filterMode = FilterMode.Point;
+        posTexture = new Texture2D(numPoints, numPoints, TextureFormat.RGBA32, false);
         posTexture.filterMode = FilterMode.Point;
         lineMat.SetFloat("_Tile", textureTile);
         //		rend.sharedMaterial = lineMat;
@@ -391,10 +391,10 @@ public class wireFrameAthon : MonoBehaviour {
 		
 		int detail = numPoints;//edges.Count;
 		//		detail -= 1;
-		texture.Resize ((int)detail, (int)detail);
-		texture.filterMode = FilterMode.Point;
-		posTexture.Resize ((int)detail, (int)detail);
-		posTexture.filterMode = FilterMode.Point;
+		//texture.Resize ((int)detail, (int)detail);
+		//texture.filterMode = FilterMode.Point;
+		//posTexture.Resize ((int)detail, (int)detail);
+		//posTexture.filterMode = FilterMode.Point;
 //		int on = 0;
 //		int off = 0;
 //		int q = -1;
@@ -407,21 +407,23 @@ public class wireFrameAthon : MonoBehaviour {
 //		}
 		for (int i = 0; i < (int)detail; i++) {
 			for (int j = 0; j < (int)detail; j++) {
-				vp = vertPositions[i+j*detail];
-				posTexture.SetPixel(i,j,new Color(vp.x,vp.y,vp.z,.1f));
+				//vp = vertPositions[i+j*detail];
+                Vector3 rCol = Random.insideUnitSphere*.5f;
+				//posTexture.SetPixel(i,j,new Color(vp.x,vp.y,vp.z,.1f));
+                posTexture.SetPixel(i, j, new Color(rCol.x+.5f,rCol.y+.5f,rCol.z+.5f, 1));
 
-				float colA = colors[(int)Mathf.Floor(Random.value*(colors.Length-1))];
-				float colC = colA+Random.Range(-colorRandomize,colorRandomize);// Mathf.Lerp(colA,colB,(float)i/detail);
-				texture.SetPixel (i,j,
-				                  new Color(
-					1,
-					0,
-					colC,
-					1));
+               // float colA = colors[(int)Mathf.Floor(Random.value*(colors.Length-1))];
+				//float colC = colA+Random.Range(-colorRandomize,colorRandomize);// Mathf.Lerp(colA,colB,(float)i/detail);
+				//texture.SetPixel (i,j,
+				//                  new Color(
+				//	1,
+				//	0,
+			//		colC,
+			//		1));
 			}
 		}
 		
-		texture.Apply ();
+		//texture.Apply ();
 		posTexture.Apply ();
 		
 	}

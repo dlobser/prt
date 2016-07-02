@@ -53,8 +53,8 @@
 				fixed4 off = tex2D(_MainTex, i.uv);
 				fixed4 col = fixed4(pow(off.x,.4554),pow(off.y,.4554),pow(off.z,.4554),off.w);
 				// apply fog
-				UNITY_APPLY_FOG(i.fogCoord, col);				
-				return fixed4(col.xyz-.5,min(1.0,_Color.a));
+				//UNITY_APPLY_FOG(i.fogCoord, col);				
+				return fixed4(float3(0,.5,0)+col.xyz-.5,min(1.0,_Color.a));
 			}
 			ENDCG
 		}

@@ -11,7 +11,7 @@ public class Collided : MonoBehaviour {
             first = false;
         else { 
         triggered = true;
-        res = other.GetComponent<resolution>().res;
+       // res = other.GetComponent<resolution>().res;
       }
     }
 	
