@@ -4,7 +4,7 @@ using System.IO;
 using System.Collections.Generic;
 
 
-public class midiLaserID : MonoBehaviour {
+public class LBControl: MonoBehaviour {
 
 	public AudioManagerMic audiM;
 
@@ -256,12 +256,12 @@ public class midiLaserID : MonoBehaviour {
 			
 		C.GetComponent<Renderer>().sharedMaterial.SetVector ("_Pos", 
 			new Vector4(
-                controller.transform.position.x,
-                controller.transform.position.y,
-                controller.transform.position.z,
-                //Mathf.Sin(Mathf.Pow(d.dials[1,0],2)*Time.time*3f)*d.dials[1,3]*.2f,
-                //Mathf.Cos(Mathf.Pow(d.dials[1,1],2)*Time.time*3f)*d.dials[1,3]*.2f,
-                //Mathf.Sin(Mathf.Pow(d.dials[1,2],2)*Time.time*3f)*d.dials[1,3]*.2f,
+//                controller.transform.position.x,
+//                controller.transform.position.y,
+//                controller.transform.position.z,
+                Mathf.Sin(Mathf.Pow(d.dials[1,0],2)*Time.time*3f)*d.dials[1,3]*.2f,
+                Mathf.Cos(Mathf.Pow(d.dials[1,1],2)*Time.time*3f)*d.dials[1,3]*.2f,
+                Mathf.Sin(Mathf.Pow(d.dials[1,2],2)*Time.time*3f)*d.dials[1,3]*.2f,
                 0 ));
 //        C.GetComponent<Renderer>().sharedMaterial.SetVector("_Pos2",
 //            new Vector4(
@@ -278,12 +278,12 @@ public class midiLaserID : MonoBehaviour {
 		C.GetComponent<Renderer>().sharedMaterial.SetFloat ("_SinAdd", d.dials[0,8]*.1f*gn (9,d.knobs[0,8],10) );
       
 		// C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Gravity", d.dials[1, 4] * .1f);
-        if (ViveWand.click)
-		    C.GetComponent<Renderer>().sharedMaterial.SetFloat ("_Gravity", 1 );
-        else
-            C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Gravity", 0);
-		
-        Debug.Log(ViveWand.click);
+//        if (ViveWand.click)
+//		    C.GetComponent<Renderer>().sharedMaterial.SetFloat ("_Gravity", 1 );
+//        else
+//            C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Gravity", 0);
+//		
+//        Debug.Log(ViveWand.click);
         wire.GetComponent<wireFrameAthon>().lineWidth = d.knobs[1,0] * .005f;
 		wire.GetComponent<Renderer>().sharedMaterial.SetColor("_Color",new Color(1,1,1, d.knobs[1,1] * .02f));
 
