@@ -104,7 +104,7 @@ public class wireFrameAthon : MonoBehaviour {
 	}
 	
 	// Use this for initialization
-	void Start () {
+	void Awake () {
         Init();
 	}
 

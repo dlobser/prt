@@ -3,10 +3,20 @@ using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 
-
 public class LBControl: MonoBehaviour {
 
 	public AudioManagerMic audiM;
+
+	public float audioLevels = 1;
+	public float effectLevels = 1;
+
+	public bool autoTransition = true;
+
+	public float videoLow = 0f;
+	public float videoHigh = 1f;
+
+	public Material videoMat;
+	public Material videoMatCheck;
 
 	public float mult = 10;
 	float[] nob;
@@ -42,7 +52,7 @@ public class LBControl: MonoBehaviour {
 	Vector3 initInit;
 	Dials d;
 
-	bool recordMode = true;
+	bool recordMode = false;
 
 	string[] presets;
 
@@ -53,10 +63,15 @@ public class LBControl: MonoBehaviour {
 
     public ViveWandControl ViveWand;
 
+	public float settingsCounter = 1;
+	float settingsTime = 0;
+	float settingsLerp = 0;
+	int settingsWhich = 0;
 
-	void Start () {
+	void Awake () {
 		
 //		Application.targetFrameRate = 30;
+
 
 		keyCodes = new KeyCode[] {
 			KeyCode.Alpha0,
@@ -70,33 +85,42 @@ public class LBControl: MonoBehaviour {
 			KeyCode.Alpha8,
 			KeyCode.Alpha9
 		};
-		presets = new string[8];
+		presets = new string[9];
 		d = Dials.Instance;
 		d.mult = mult;
-		Application.targetFrameRate = 60;
+//		Application.targetFrameRate = 60;
 		initInit = initial.transform.position;
 		nob = new float[100];
 		nob2 = new float[100];
 		switch3DObject (0);
 
-		for (int i = 0; i < 8; i++) {
-			presets [i] = (System.IO.File.ReadAllText ("Assets/athon/data/data_" + i + ".txt"));
-			print (presets [i]);
-//			d.readDials (System.IO.File.ReadAllText ("Assets/athon/data/data_" + i + ".txt"));
-		}
+//		for (int i = 0; i < 8; i++) {
+//			presets [i] = (System.IO.File.ReadAllText ("Assets/athon/data/data_" + i + ".txt"));
+//			print (presets [i]);
+////			d.readDials (System.IO.File.ReadAllText ("Assets/athon/data/data_" + i + ".txt"));
+//		}
+		presets [1] = "0,0.5922341,0,0,8.897638,2.917476,9.683504,0,9.215755,0,0,0,0,10,0,0,2.519684,0,0,0,0,0,0,0,0,0,0,,2.362213,6.028938,0,0,0,7.638378,0,0,0,0.5633354,6.284904,0,0.5511856,0,0,0,0,0,0,0,0,0,0,0,0,0,0,";
+		presets [2] = "0,0.5109644,0.6299213,0.8194852,4.676285,3.289375,0,1.811023,9.574375,0,0.3149605,0.5511856,0,9.890175,10,9.067984,10,0,0,0,0,0,0,0,0,0,0,,3.070869,0,8.893852,0,0,0,0,0,0,0.5312157,9.212589,6.692905,1.023617,0,0,0,0,0,0,0,0,0,0,0,0,0,0,";
+		presets [3] = "0,3.333145,0.6299213,0,4.330711,9.92126,8.581238,0.1574802,10,0,0.3149606,0.5511811,5.905514,0,10,10,0,0,0,0,0,0,0,0,0,0,0,,3.070866,0,5.196857,0,0,0,0,0,0,0.5254173,9.212598,6.692913,1.023622,0,0,0,0,0,0,0,0,0,0,0,0,0,0,";
+		presets[4] = "0,1.552517,0,0,8.897638,8.844385,0,0,9.886007,0,0,0,0,10,0,0,2.519684,0,0,0,0,0,0,0,0,0,0,,2.362213,6.028938,0,0,0,0,0,0,0,0.5633354,6.284904,0,0.5511856,0,0,0,0,0,0,0,0,0,0,0,0,0,0,";
+		presets[5] = "0,0.5793357,0.4843688,0,8.897638,8.844385,0,0,1.045694,0,0,0,0,10,9.000654,0,8.252735,0,0,0,0,0,0,0,0,0,0,,2.362213,8.620224,0,0,0,3.135395,0,0,0,0.5633354,6.284904,0,0.5511856,0,0,0,0,0,0,0,0,0,0,0,0,0,0,";
+		presets[6] = "0,0.5793357,0.4843688,0,8.897638,9.479952,0,0,8.338823,0,0,0,0,10,9.000654,0,8.252735,0,0,0,0,0,0,0,0,0,0,,2.362213,8.620224,0,0,0,3.135395,6.7202,0,0,0.5633354,6.284904,0,0.5511856,0,0,0,0,0,0,0,0,0,0,0,0,0,0,";
+		presets[7] = "0,0.5793357,0.4843688,5.740736,8.897638,9.479952,0,0,9.553757,0,0,0,0,0,9.000654,0,8.252735,0,0,0,0,0,0,0,0,0,0,,2.362213,1.962032,0,0,0,1.177502,0.8564758,0,0,0.5633354,6.284904,0,0.5511856,0,0,0,0,0,0,0,0,0,0,0,0,0,0,";
+		presets[8] =  "0,0.546062,0.4843688,0,8.825817,5.703783,0,0,3.662252,0,0,0,0,9.396534,9.509058,9.662819,8.100395,0,0,0,0,0,0,0,0,0,0,,0,1.298008,0,0.3359795,0,2.051105,6.7202,0,0,0.5633354,6.284904,0,0.5511856,0,0,0,0,0,0,0,0,0,0,0,0,0,0,";
 		d.checkDials (true);
-//		d.readDials (presets [1]);
+		d.readDials (presets [1]);
 
 	}
+
 
 	//get knob
 	float gn(int a, float w,float m){
 		float r = 0;
 		if (!playing)
-			r = 1 + (audiM.GetBands (new int[]{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 }) * w * m);
+			r = 1 + (audiM.GetBands (new int[]{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}) * w * m);
 		else if (playCounter < d.volumeBuffer.Length)
 			r = 1 + d.volumeAudioBuffer [audioPlayCounter];//* w * m;
-		return r;
+		return Mathf.Lerp(1, r, effectLevels) * audioLevels;
 	}
 
 	void switch3DObject(float which){
@@ -122,7 +146,55 @@ public class LBControl: MonoBehaviour {
 		}
 	}
 
+	public void setHighVideo(float high){
+		videoHigh = high;
+//		updateLevels ();
+	}
+	public void setLowVideo(float low){
+		videoLow = low;
+//		updateLevels ();
+	}
+	public void setEffectLevels(float effect){
+		effectLevels = effect;	
+	}
+
+	public void setAudioLevel(float audio){
+		audioLevels = audio;	
+	}
+
+	void updateLevels(){
+		A.GetComponent<MeshRenderer>().sharedMaterial.SetVector ("_VideoLevels", new Vector4 (videoLow, videoHigh, 0.0f, 0.0f));
+		videoMatCheck.SetVector ("_VideoLevels", new Vector4 (videoLow, videoHigh, 0.0f, 0.0f));
+	}
+
+	void settingsSwitch(){
+		settingsTime += Time.deltaTime;
+		if (settingsTime > settingsCounter) {
+			settingsTime = 0;
+			settingsWhich++;
+			if (settingsWhich > presets.Length-1) {
+				settingsWhich = 0;
+			}
+			d.readDials (presets [settingsWhich]);
+		}
+
+	}
+
+	public void triggerAutoTransition(bool which){
+		autoTransition = which;
+	}
+
+	public void setSettingsCounter(float value){
+		settingsCounter = value;
+	}
+
+
 	void Update () {
+
+		updateLevels ();
+		if(autoTransition)
+			settingsSwitch ();
+
 		if(!playing)
 			d.checkDials (false);
 		if ( Input.GetKeyUp( KeyCode.U) && recordMode || MidiInput.GetKnob (45,MidiInput.Filter.Realtime) > .5f) {
@@ -141,23 +213,24 @@ public class LBControl: MonoBehaviour {
 				d.readDials ( s);//(System.IO.File.ReadAllText ("Assets/athon/data/data_" + i + ".txt"));
 			}
 		}
-		if (Input.GetKeyUp( KeyCode.L) || MidiInput.GetKnob (48, MidiInput.Filter.Realtime) > .5f) {
-			for (int i = 0; i < 8; i++) {
-				System.IO.File.WriteAllText ("Assets/athon/data/data_" + sessionName + i + ".txt", presets[i]);
-			}
-			Debug.Log ("saved");
-		}
+//		if (Input.GetKeyUp( KeyCode.L) || MidiInput.GetKnob (48, MidiInput.Filter.Realtime) > .5f) {
+//			for (int i = 0; i < 8; i++) {
+//				System.IO.File.WriteAllText ("Assets/athon/data/data_" + sessionName + i + ".txt", presets[i]);
+//			}
+//			Debug.Log ("saved");
+//		}
 //		if (Input.any) {
-			for (int i = 0; i < 8; i++) {
+			for (int i = 0; i < 9; i++) {
 //				Debug.Log (keyCodes [i]);
 				if (Input.GetKeyUp (keyCodes [i])) {
 					if (recordMode) {
 						presets [i] = d.recordDials ();
 					} else {
 						d.readDials (presets [i]);
-						Menu.GetComponent<UIMidi> ().setSliders ();
+					if(Menu.transform.GetChild(0).gameObject.activeInHierarchy)
+							Menu.transform.GetChild(0).transform.GetChild(1). GetComponent<UIMidi> ().setSliders ();
 					}
-//					Debug.Log (presets [i]);
+					Debug.Log (presets [i]);
 				}
 			}
 //		}
@@ -169,10 +242,10 @@ public class LBControl: MonoBehaviour {
 			Debug.Log (recording);
 		}
 		if (Input.GetKeyUp (KeyCode.M)) {
-			if (!Menu.transform.parent.gameObject.activeInHierarchy)
-				Menu.transform.parent.gameObject.SetActive (true);
+			if (!Menu.activeInHierarchy)
+				Menu.SetActive (true);
 			else
-				Menu.transform.parent.gameObject.SetActive (false);
+				Menu.SetActive (false);
 		}
 		if (recording) {
 			recordCounter += Time.deltaTime;
@@ -182,14 +255,14 @@ public class LBControl: MonoBehaviour {
 			}
 			d.makeAudioBuffer(audiM.GetBands (new int[]{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 }));
 		}
-		if (Input.GetKeyUp (KeyCode.S)) {
-			System.IO.File.WriteAllText ("Assets/athon/data/session_" + sessionName + ".txt",d.buffer);
-			System.IO.File.WriteAllText ("Assets/athon/data/sessionAudio_" + sessionName + ".txt",d.audioBuffer);
-		}
+//		if (Input.GetKeyUp (KeyCode.S)) {
+//			System.IO.File.WriteAllText ("Assets/athon/data/session_" + sessionName + ".txt",d.buffer);
+//			System.IO.File.WriteAllText ("Assets/athon/data/sessionAudio_" + sessionName + ".txt",d.audioBuffer);
+//		}
 		if (Input.GetKeyUp (KeyCode.P)) {
 			if (!buffered) {
-				d.readBuffer(System.IO.File.ReadAllText ("Assets/athon/data/session_" + sessionName + ".txt"));
-				d.readAudioBuffer(System.IO.File.ReadAllText ("Assets/athon/data/sessionAudio_" + sessionName + ".txt"));
+//				d.readBuffer(System.IO.File.ReadAllText ("Assets/athon/data/session_" + sessionName + ".txt"));
+//				d.readAudioBuffer(System.IO.File.ReadAllText ("Assets/athon/data/sessionAudio_" + sessionName + ".txt"));
 				buffered = true;
 			}
 			playing = !playing;
@@ -274,10 +347,10 @@ public class LBControl: MonoBehaviour {
 				d.dials[1,5],
 				d.dials[1,6],
 				d.dials[1,7],0 ));
-		initial.GetComponent<Renderer>().sharedMaterial.SetColor ("_Color",new Color(1,1,1, d.dials [0,7]*.1f*gn (8,d.knobs[0,7],10)  ));
+//		initial.GetComponent<Renderer>().sharedMaterial.SetColor ("_Color",new Color(1,1,1, d.dials [0,7]*.1f*gn (8,d.knobs[0,7],10)  ));
 		C.GetComponent<Renderer>().sharedMaterial.SetFloat ("_SinAdd", d.dials[0,8]*.1f*gn (9,d.knobs[0,8],10) );
       
-		// C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Gravity", d.dials[1, 4] * .1f);
+		C.GetComponent<Renderer>().sharedMaterial.SetFloat("_Gravity", d.dials[1, 4] * .1f);
 //        if (ViveWand.click)
 //		    C.GetComponent<Renderer>().sharedMaterial.SetFloat ("_Gravity", 1 );
 //        else

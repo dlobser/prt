@@ -30,30 +30,66 @@ public class AudioManagerMic : MonoBehaviour
 	
 	public float volume = 0f;
 	public bool isPlaying = false;
+	public float estimatedLatency { get; protected set; }
 
 	bool setupMic = true;
+
+	float timer = 0;
+
+	void Awake(){
+
+	}
 	
 	// Use this for initialization
 	void Start()
 	{
-
+//		if (setupMic) {
+//			_aud = this.GetComponent<AudioSource> ();
+//			_aud.loop = true;
+//			_aud.clip = Microphone.Start ("Built-in Microphone", true, 1, numOfSamples);
+////			while (!(Microphone.GetPosition("Built-in Microphone") > 0)) {
+////				_aud.Play ();
+////			}
+//
+//			if (_aud.clip != null)
+//			{
+//				// Wait until the microphone gets initialized.
+//				int delay = 0;
+//				while (delay <= 0) delay = Microphone.GetPosition(null);
+//
+//				// Start playing.
+//				_aud.Play();
+//
+//				// Estimate the latency.
+//				estimatedLatency = (float)delay / numOfSamples;
+//			}
+//			//		_aud.Stop();
+//
+//			SetUpSpectrum ();
+//			setupMic=false;
+//		}
 	}
 	
 	void Update()
 	{
-		if (setupMic) {
-			_aud = this.GetComponent<AudioSource> ();
-			_aud.clip = Microphone.Start ("Built-in Microphone", true, 999, numOfSamples);
-			while (!(Microphone.GetPosition("Built-in Microphone") > 0)) {
-				_aud.Play ();
-			}
-			//		_aud.Stop();
+		if (timer < 3)
+			timer += Time.deltaTime;
+		else {
+			if (setupMic) {
+				_aud = this.GetComponent<AudioSource> ();
+				_aud.loop = true;
+				_aud.clip = Microphone.Start ("Built-in Microphone", true, 1, numOfSamples);
+				while (!(Microphone.GetPosition ("Built-in Microphone") > 0)) {
+					_aud.Play ();
+				}
+				//		_aud.Stop();
 			
-			SetUpSpectrum ();
-			setupMic=false;
+				SetUpSpectrum ();
+				setupMic = false;
+			}
+			this.isPlaying = _aud.isPlaying;
+			_aud.volume = this.volume;
 		}
-		this.isPlaying = _aud.isPlaying;
-		_aud.volume = this.volume;
 	}
 	
 	void SetUpSpectrum()
@@ -127,7 +163,8 @@ public class AudioManagerMic : MonoBehaviour
 		
 		for (int i = 0; i < nums.Length; i++)
 		{
-			sum += band[nums[i]];
+			if(!setupMic)
+				sum += band[nums[i]];
 		}
 		
 		return sum;
