@@ -71,7 +71,11 @@
 				// sample the texture
 				fixed4 init = tex2D(_MainTex,i.uv);
 				fixed4 ns = tex2D(_Noise,init.xy);
-				float nsClamp = max(0.0,min(1.0,map(ns.r,0.0,1.0,_VideoLevels.x,_VideoLevels.y))); //min(1.,max(0,(((1.-ns.r)-.3)*10.)));
+
+				float reverse = clamp(1-cos(_VideoLevels.z*_Time.x)*5,-1,1);
+				float nsClamp = max(0.0,min(1.0,map(ns.r,reverse,1.0-reverse,_VideoLevels.x,_VideoLevels.y))); //min(1.,max(0,(((1.-ns.r)-.3)*10.)));
+
+//				float nsClamp = max(0.0,min(1.0,map(ns.r,0.0,1.0,_VideoLevels.x,_VideoLevels.y))); //min(1.,max(0,(((1.-ns.r)-.3)*10.)));
 				fixed4 col = tex2D(_Other, i.uv);
 				float d =  distance(col,f4(0.0));
 				fixed4 angle = col;// -f4(0.0);

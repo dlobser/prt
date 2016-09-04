@@ -3,7 +3,7 @@
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-		_VideoLevels("videoLevels",Vector) = (1,1,1)
+		_VideoLevels("videoLevels",Vector) = (1,1,1,1)
 	}
 	SubShader
 	{
@@ -50,13 +50,20 @@
 			{
 				return b1 + (s-a1)*(b2-b1)/(a2-a1);
 			}
+
+			float clamp(float val, float Min, float Max){
+				return max(Min,min(Max,val));
+			}
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
 				// sample the texture
 				fixed4 col = tex2D(_MainTex, i.uv);
-				float nsClamp = max(0.0,min(1.0,map(col.r,0.0,1.0,_VideoLevels.x,_VideoLevels.y))); //min(1.,max(0,(((1.-ns.r)-.3)*10.)));
-
+//				float reverse = map(clamp(1-cos(_VideoLevels.z*_Time.y)*_VideoLevels.w,-1,1),-1,1,0,1);
+//				float nsClamp = max(0.0,min(1.0,map(col.r,reverse,1.0-reverse,_VideoLevels.x,_VideoLevels.y))); //min(1.,max(0,(((1.-ns.r)-.3)*10.)));
+//
+				float reverse = clamp(1-cos(_VideoLevels.z*_Time.x)*5,-1,1);
+				float nsClamp = max(0.0,min(1.0,map(col.r,reverse,1.0-reverse,_VideoLevels.x,_VideoLevels.y)));
 				// apply fog
 				UNITY_APPLY_FOG(i.fogCoord, col);
 				return fixed4(nsClamp,nsClamp,nsClamp,1.0);

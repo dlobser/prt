@@ -15,6 +15,9 @@ public class LBControl: MonoBehaviour {
 	public float videoLow = 0f;
 	public float videoHigh = 1f;
 
+	public float videoOscillateSpeed;
+	public float videoOscillateAmount;
+
 	public Material videoMat;
 	public Material videoMatCheck;
 
@@ -148,12 +151,18 @@ public class LBControl: MonoBehaviour {
 
 	public void setHighVideo(float high){
 		videoHigh = high;
-//		updateLevels ();
 	}
 	public void setLowVideo(float low){
 		videoLow = low;
-//		updateLevels ();
 	}
+
+	public void SetVideoOscillateSpeed(float high){
+		videoOscillateSpeed = high;
+	}
+	public void SetvideoOscillateAmount(float low){
+		videoOscillateAmount = low;
+	}
+
 	public void setEffectLevels(float effect){
 		effectLevels = effect;	
 	}
@@ -163,8 +172,8 @@ public class LBControl: MonoBehaviour {
 	}
 
 	void updateLevels(){
-		A.GetComponent<MeshRenderer>().sharedMaterial.SetVector ("_VideoLevels", new Vector4 (videoLow, videoHigh, 0.0f, 0.0f));
-		videoMatCheck.SetVector ("_VideoLevels", new Vector4 (videoLow, videoHigh, 0.0f, 0.0f));
+		A.GetComponent<MeshRenderer>().sharedMaterial.SetVector ("_VideoLevels", new Vector4 (videoLow, videoHigh, videoOscillateSpeed, videoOscillateAmount));
+		videoMatCheck.SetVector ("_VideoLevels", new Vector4 (videoLow, videoHigh, videoOscillateSpeed, videoOscillateAmount));
 	}
 
 	void settingsSwitch(){
